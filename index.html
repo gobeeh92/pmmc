@@ -3,285 +3,281 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حاسبة تحويل الجلفانومتر التفاعلية | Galvanometer Calculator</title>
+    <title>Galvanometer Conversion Calculator & Visualizer</title>
     <style>
         :root {
-            --primary: #1e3c72;
-            --primary-dark: #2a5298;
-            --border: #e2e8f0;
-            --text-main: #2c3e50;
-            --text-muted: #7f8c8d;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-page: #0f172a;
+            --card-bg: #1e293b;
+            --card-inner: #0f172a;
+            --border: #334155;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-green: #10b981;
+            --accent-orange: #f59e0b;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            background-color: var(--bg-page);
+            color: var(--text);
             min-height: 100vh;
-            padding: 25px 15px;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: var(--text-main);
+            padding: 20px;
         }
 
-        .calculator-container {
-            background: #ffffff;
-            max-width: 900px;
+        .widget-container {
+            background: var(--card-bg);
             width: 100%;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+            max-width: 850px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
             overflow: hidden;
         }
 
-        .header {
-            background: #192a56;
-            color: #fff;
-            padding: 22px;
-            text-align: center;
-            border-bottom: 4px solid #00d2d3;
+        .widget-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.6);
         }
 
-        .header h1 {
-            font-size: 22px;
-            margin-bottom: 6px;
+        .widget-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .header p {
-            font-size: 13px;
-            color: #dcdde1;
+        .tabs {
+            display: flex;
+            background: var(--card-inner);
+            padding: 4px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            gap: 4px;
         }
 
-        .content {
-            padding: 30px;
+        .tab-btn {
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.88rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+        }
+
+        .widget-body {
+            padding: 24px;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
+            grid-template-columns: 1fr 1.3fr;
+            gap: 24px;
         }
 
         @media (max-width: 768px) {
-            .content {
+            .widget-body {
                 grid-template-columns: 1fr;
             }
         }
 
-        .control-section {
+        .inputs-col {
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 16px;
         }
 
-        .mode-toggle {
-            display: flex;
-            background: #eef2f7;
-            padding: 5px;
-            border-radius: 12px;
-            gap: 5px;
-        }
-
-        .mode-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            background: transparent;
-            font-size: 14px;
-            font-weight: bold;
-            border-radius: 9px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: #57606f;
-        }
-
-        .mode-btn.active {
-            background: #1e3c72;
-            color: #ffffff;
-            box-shadow: 0 4px 10px rgba(30, 60, 114, 0.3);
-        }
-
-        .input-group {
+        .input-card {
+            background: var(--card-inner);
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
             display: flex;
             flex-direction: column;
             gap: 6px;
         }
 
-        .input-group label {
-            font-size: 13.5px;
+        .input-card label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
             font-weight: 600;
-            color: #34495e;
+        }
+
+        .input-row {
             display: flex;
             justify-content: space-between;
-        }
-
-        .input-group span.sub-label {
-            font-size: 11.5px;
-            color: var(--text-muted);
-            font-weight: normal;
-        }
-
-        .input-wrapper {
-            display: flex;
             align-items: center;
-            background: #f8fafc;
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            overflow: hidden;
-            transition: border-color 0.2s ease;
         }
 
-        .input-wrapper:focus-within {
-            border-color: #2a5298;
-            background: #fff;
-        }
-
-        .input-wrapper input {
-            width: 100%;
-            padding: 10px 14px;
+        .input-row input {
+            background: transparent;
             border: none;
             outline: none;
-            background: transparent;
-            font-size: 16px;
-            font-weight: bold;
-            color: #2f3542;
+            color: var(--text);
+            font-size: 1.2rem;
+            font-weight: 700;
+            width: 60%;
             direction: ltr;
             text-align: right;
         }
 
-        .input-wrapper .unit {
-            padding: 10px 14px;
-            background: #e2e8f0;
-            color: #475569;
-            font-size: 13px;
+        .input-row .unit-badge {
+            background: #1e293b;
+            color: #38bdf8;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
             font-weight: bold;
-            min-width: 65px;
-            text-align: center;
-        }
-
-        .results-section {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
-
-        .result-card {
-            background: #f0fdf4;
-            border: 2px solid #86efac;
-            border-radius: 15px;
-            padding: 18px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            gap: 8px;
-        }
-
-        .result-title {
-            font-size: 14px;
-            font-weight: bold;
-            color: #166534;
-        }
-
-        .result-value {
-            font-size: 26px;
-            font-weight: 800;
-            color: #15803d;
-            direction: ltr;
-        }
-
-        .formula-box {
-            background: #f1f5f9;
-            padding: 12px 15px;
-            border-radius: 10px;
-            font-size: 13px;
-            color: #334155;
-            line-height: 1.6;
-            border-right: 4px solid #1e3c72;
-        }
-
-        .circuit-visualizer {
-            background: #ffffff;
             border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
-        .circuit-visualizer h4 {
-            font-size: 12.5px;
-            color: #64748b;
+        .display-col {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 12px;
+            padding: 18px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
             margin-bottom: 6px;
         }
 
-        svg text {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #34d399;
+            direction: ltr;
+        }
+
+        .stat-sub {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 4px;
+            direction: ltr;
+        }
+
+        .schematic-box {
+            background: var(--card-inner);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .schematic-header {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            align-self: flex-start;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        svg {
+            width: 100%;
+            height: 150px;
+        }
+
+        .formula-inline {
+            background: var(--card-inner);
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 0.82rem;
+            color: #e2e8f0;
+            direction: ltr;
+            text-align: center;
+            font-family: 'Consolas', monospace;
         }
     </style>
 </head>
 <body>
 
-<div class="calculator-container">
-    <div class="header">
-        <h1>حاسبة تحويل الجلفانومتر | Galvanometer Calculator</h1>
-        <p>محاكاة رياضية وبصرية لحساب مقاومة التوالي (Rm) ومقاومة التوازي (Rs)</p>
+<div class="widget-container">
+    <div class="widget-header">
+        <div class="widget-title">
+            <span>⚡</span> حاسبة تحويل الجلفانومتر التفاعلية
+        </div>
+        <div class="tabs">
+            <button class="tab-btn active" id="tab-v" onclick="switchMode('voltmeter')">فولتميتر (V)</button>
+            <button class="tab-btn" id="tab-a" onclick="switchMode('ammeter')">أميتر (A)</button>
+        </div>
     </div>
 
-    <div class="content">
-        <!-- المدخلات -->
-        <div class="control-section">
-            <div class="mode-toggle">
-                <button class="mode-btn active" id="btn-voltmeter" onclick="setMode('voltmeter')">فولتميتر (Voltmeter)</button>
-                <button class="mode-btn" id="btn-ammeter" onclick="setMode('ammeter')">أميتر (Ammeter)</button>
-            </div>
-
-            <div class="input-group">
-                <label>مقاومة الجلفانومتر الداخلية (Rg) <span class="sub-label">المقاومة الذاتية للملف</span></label>
-                <div class="input-wrapper">
-                    <input type="number" id="rg-input" value="100" min="0.01" step="any" oninput="calculate()">
-                    <span class="unit">Ω (أوم)</span>
+    <div class="widget-body">
+        <div class="inputs-col">
+            <div class="input-card">
+                <label>مقاومة الجلفانومتر (Rg)</label>
+                <div class="input-row">
+                    <input type="number" id="in-rg" value="100" min="0.1" step="any" oninput="updateCalc()">
+                    <span class="unit-badge">Ω</span>
                 </div>
             </div>
 
-            <div class="input-group">
-                <label>أقصى تيار للجلفانومتر (Ig) <span class="sub-label">تيار الانحراف الكامل</span></label>
-                <div class="input-wrapper">
-                    <input type="number" id="ig-input" value="0.6" min="0.0001" step="any" oninput="calculate()">
-                    <span class="unit">mA (مللي أمبير)</span>
+            <div class="input-card">
+                <label>أقصى تيار للجلفانومتر (Ig)</label>
+                <div class="input-row">
+                    <input type="number" id="in-ig" value="0.6" min="0.001" step="any" oninput="updateCalc()">
+                    <span class="unit-badge">mA</span>
                 </div>
             </div>
 
-            <div class="input-group">
-                <label id="target-label">الجهد الأقصى المراد قياسه (V) <span class="sub-label">المدى المطلوب</span></label>
-                <div class="input-wrapper">
-                    <input type="number" id="target-input" value="10" min="0.01" step="any" oninput="calculate()">
-                    <span class="unit" id="target-unit">V (فولت)</span>
+            <div class="input-card">
+                <label id="lbl-target">أقصى مدى جهد مراد قياسه (V)</label>
+                <div class="input-row">
+                    <input type="number" id="in-target" value="10" min="0.01" step="any" oninput="updateCalc()">
+                    <span class="unit-badge" id="badge-target">V</span>
                 </div>
             </div>
 
-            <div class="formula-box" id="formula-desc">
-                <strong>القانون الرياضي المطبق:</strong><br>
-                <code id="formula-text">R_m = (V / I_g) - R_g</code>
+            <div class="formula-inline" id="calc-formula">
+                Rm = (V / Ig) - Rg
             </div>
         </div>
 
-        <!-- المخرجات والرسم -->
-        <div class="results-section">
-            <div class="result-card highlight">
-                <div class="result-title" id="result-title">قيمة مقاومة مضاعف الجهد المطلوبة (Rm)</div>
-                <div class="result-value" id="result-value">16,566.67 Ω</div>
-                <div style="font-size: 12px; color: #166534;" id="result-equiv">المقاومة الكلية للفولتميتر = 16,666.67 Ω</div>
+        <div class="display-col">
+            <div class="stat-card">
+                <div class="stat-label" id="res-label">مقاومة مضاعف الجهد المطلوبة (Rm)</div>
+                <div class="stat-value" id="res-val">16.567 kΩ</div>
+                <div class="stat-sub" id="res-req">Req = 16.667 kΩ</div>
             </div>
 
-            <div class="circuit-visualizer">
-                <h4>المخطط التوضيحي لتوصيل الدائرة (Circuit Diagram)</h4>
-                <svg id="circuit-svg" width="100%" height="140" viewBox="0 0 360 140">
-                    <!-- Dynamic SVG drawn via JS -->
+            <div class="schematic-box">
+                <div class="schematic-header">LIVE CIRCUIT SCHEMATIC</div>
+                <svg id="svg-circuit" viewBox="0 0 400 140">
                 </svg>
             </div>
         </div>
@@ -289,132 +285,142 @@
 </div>
 
 <script>
-    let currentMode = 'voltmeter';
+    let mode = 'voltmeter';
 
-    function setMode(mode) {
-        currentMode = mode;
-        const btnV = document.getElementById('btn-voltmeter');
-        const btnA = document.getElementById('btn-ammeter');
-        const targetLabel = document.getElementById('target-label');
-        const targetUnit = document.getElementById('target-unit');
-        const targetInput = document.getElementById('target-input');
+    function switchMode(newMode) {
+        mode = newMode;
+        document.getElementById('tab-v').classList.toggle('active', mode === 'voltmeter');
+        document.getElementById('tab-a').classList.toggle('active', mode === 'ammeter');
+
+        const lblTarget = document.getElementById('lbl-target');
+        const badgeTarget = document.getElementById('badge-target');
+        const inTarget = document.getElementById('in-target');
 
         if (mode === 'voltmeter') {
-            btnV.classList.add('active');
-            btnA.classList.remove('active');
-            targetLabel.innerHTML = 'الجهد الأقصى المراد قياسه (V) <span class="sub-label">المدى المطلوب</span>';
-            targetUnit.innerText = 'V (فولت)';
-            targetInput.value = '10';
+            lblTarget.innerText = 'أقصى مدى جهد مراد قياسه (V)';
+            badgeTarget.innerText = 'V';
+            inTarget.value = '10';
         } else {
-            btnA.classList.add('active');
-            btnV.classList.remove('active');
-            targetLabel.innerHTML = 'التيار الأقصى المراد قياسه (I) <span class="sub-label">المدى المطلوب</span>';
-            targetUnit.innerText = 'mA (مللي أمبير)';
-            targetInput.value = '50';
+            lblTarget.innerText = 'أقصى مدى تيار مراد قياسه (I)';
+            badgeTarget.innerText = 'mA';
+            inTarget.value = '50';
         }
-        calculate();
+        updateCalc();
     }
 
-    function calculate() {
-        const Rg = parseFloat(document.getElementById('rg-input').value) || 0;
-        const Ig_mA = parseFloat(document.getElementById('ig-input').value) || 0;
+    function updateCalc() {
+        const Rg = parseFloat(document.getElementById('in-rg').value) || 0;
+        const Ig_mA = parseFloat(document.getElementById('in-ig').value) || 0;
         const Ig = Ig_mA / 1000;
-        const targetVal = parseFloat(document.getElementById('target-input').value) || 0;
+        const targetVal = parseFloat(document.getElementById('in-target').value) || 0;
 
-        const resTitle = document.getElementById('result-title');
-        const resVal = document.getElementById('result-value');
-        const resEq = document.getElementById('result-equiv');
-        const formulaText = document.getElementById('formula-text');
+        const resLabel = document.getElementById('res-label');
+        const resVal = document.getElementById('res-val');
+        const resReq = document.getElementById('res-req');
+        const calcFormula = document.getElementById('calc-formula');
 
         if (Ig <= 0 || Rg <= 0 || targetVal <= 0) {
-            resVal.innerText = 'قيم غير صالحة';
+            resVal.innerText = '--';
+            resReq.innerText = '--';
             return;
         }
 
-        if (currentMode === 'voltmeter') {
+        if (mode === 'voltmeter') {
             const V = targetVal;
-            formulaText.innerHTML = `R_m = (V / I_g) - R_g = (${V} / ${Ig.toFixed(6)}) - ${Rg}`;
-            
+            calcFormula.innerText = `Rm = (${V}V / ${Ig_mA}mA) - ${Rg}Ω`;
             const Rm = (V / Ig) - Rg;
             const Req = Rg + Rm;
 
-            resTitle.innerText = 'قيمة مقاومة مضاعف الجهد التوالي (Rm):';
+            resLabel.innerText = 'مقاومة مضاعف الجهد المطلوبة (Rm)';
             if (Rm < 0) {
-                resVal.innerText = 'الجهد أصغر من جهد الجلفانومتر الذاتي';
-                resEq.innerText = '';
+                resVal.innerText = 'Invalid Range';
+                resReq.innerText = 'V must be > Vg';
             } else {
-                resVal.innerText = formatResistance(Rm);
-                resEq.innerText = `المقاومة الكلية للفولتميتر = ${formatResistance(Req)}`;
+                resVal.innerText = formatOhms(Rm);
+                resReq.innerText = `Total Meter Resistance (Req) = ${formatOhms(Req)}`;
             }
-            drawSeriesCircuit(Rm, Rg);
+            renderVoltmeterSVG(Rm, Rg, V);
         } else {
-            const I = targetVal / 1000;
-            formulaText.innerHTML = `R_s = (I_g · R_g) / (I - I_g) = (${Ig.toFixed(6)} · ${Rg}) / (${I.toFixed(6)} - ${Ig.toFixed(6)})`;
+            const I_mA = targetVal;
+            const I = I_mA / 1000;
+            calcFormula.innerText = `Rs = (${Ig_mA}mA × ${Rg}Ω) / (${I_mA}mA - ${Ig_mA}mA)`;
 
+            resLabel.innerText = 'مقاومة مجزئ التيار المطلوبة (Rs)';
             if (I <= Ig) {
-                resTitle.innerText = 'قيمة مجزئ التيار (Rs):';
-                resVal.innerText = 'التيار المطلوب يجب أن يكون أكبر من Ig';
-                resEq.innerText = '';
-                drawParallelCircuit(0, Rg);
+                resVal.innerText = 'Invalid Range';
+                resReq.innerText = 'Target I must be > Ig';
+                renderAmmeterSVG(0, Rg, I_mA);
             } else {
                 const Rs = (Ig * Rg) / (I - Ig);
                 const Req = (Rg * Rs) / (Rg + Rs);
-
-                resTitle.innerText = 'قيمة مقاومة مجزئ التيار التوازي (Rs):';
-                resVal.innerText = formatResistance(Rs);
-                resEq.innerText = `المقاومة الكلية للأميتر = ${formatResistance(Req)}`;
-                drawParallelCircuit(Rs, Rg);
+                resVal.innerText = formatOhms(Rs);
+                resReq.innerText = `Total Meter Resistance (Req) = ${formatOhms(Req)}`;
+                renderAmmeterSVG(Rs, Rg, I_mA);
             }
         }
     }
 
-    function formatResistance(val) {
-        if (val >= 1e6) return (val / 1e6).toFixed(3) + ' MΩ';
-        if (val >= 1e3) return (val / 1e3).toFixed(3) + ' kΩ';
-        return val.toFixed(3) + ' Ω';
+    function formatOhms(num) {
+        if (num >= 1e6) return (num / 1e6).toFixed(3) + ' MΩ';
+        if (num >= 1e3) return (num / 1e3).toFixed(3) + ' kΩ';
+        return num.toFixed(3) + ' Ω';
     }
 
-    function drawSeriesCircuit(Rm, Rg) {
-        const svg = document.getElementById('circuit-svg');
+    function renderVoltmeterSVG(Rm, Rg, V) {
+        const svg = document.getElementById('svg-circuit');
         svg.innerHTML = `
-            <line x1="20" y1="70" x2="80" y2="70" stroke="#1e3c72" stroke-width="3" />
-            <rect x="80" y="55" width="70" height="30" fill="#f8fafc" stroke="#e67e22" stroke-width="3" rx="4" />
-            <text x="115" y="75" fill="#d35400" font-size="12" font-weight="bold" text-anchor="middle">Rm (توالي)</text>
-            <line x1="150" y1="70" x2="200" y2="70" stroke="#1e3c72" stroke-width="3" />
-            <circle cx="230" cy="70" r="28" fill="#ffffff" stroke="#2980b9" stroke-width="3" />
-            <text x="230" y="75" fill="#2980b9" font-size="16" font-weight="bold" text-anchor="middle">G</text>
-            <text x="230" y="112" fill="#7f8c8d" font-size="11" text-anchor="middle">Rg</text>
-            <line x1="258" y1="70" x2="340" y2="70" stroke="#1e3c72" stroke-width="3" />
-            <circle cx="20" cy="70" r="5" fill="#e74c3c" />
-            <circle cx="340" cy="70" r="5" fill="#2c3e50" />
-            <text x="20" y="50" fill="#e74c3c" font-size="12" font-weight="bold" text-anchor="middle">+</text>
-            <text x="340" y="50" fill="#2c3e50" font-size="12" font-weight="bold" text-anchor="middle">-</text>
+            <line x1="30" y1="70" x2="110" y2="70" stroke="#38bdf8" stroke-width="3" />
+            <rect x="110" y="48" width="80" height="44" rx="8" fill="#1e293b" stroke="#f59e0b" stroke-width="2.5" />
+            <text x="150" y="74" fill="#fbbf24" font-size="12" font-weight="bold" text-anchor="middle">Rm</text>
+            <text x="150" y="108" fill="#94a3b8" font-size="10" text-anchor="middle">${formatOhms(Rm)}</text>
+            
+            <line x1="190" y1="70" x2="250" y2="70" stroke="#38bdf8" stroke-width="3" />
+            
+            <circle cx="280" cy="70" r="28" fill="#1e293b" stroke="#38bdf8" stroke-width="2.5" />
+            <text x="280" y="76" fill="#38bdf8" font-size="18" font-weight="bold" text-anchor="middle">G</text>
+            <text x="280" y="112" fill="#94a3b8" font-size="10" text-anchor="middle">Rg = ${Rg}Ω</text>
+            
+            <line x1="308" y1="70" x2="370" y2="70" stroke="#38bdf8" stroke-width="3" />
+
+            <circle cx="30" cy="70" r="6" fill="#ef4444" />
+            <circle cx="370" cy="70" r="6" fill="#64748b" />
+            <text x="30" y="46" fill="#ef4444" font-size="12" font-weight="bold" text-anchor="middle">+</text>
+            <text x="370" y="46" fill="#94a3b8" font-size="12" font-weight="bold" text-anchor="middle">-</text>
+
+            <path d="M 30 125 L 370 125" stroke="#475569" stroke-width="1.5" stroke-dasharray="4,4" />
+            <text x="200" y="137" fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="middle">V_max = ${V} V</text>
         `;
     }
 
-    function drawParallelCircuit(Rs, Rg) {
-        const svg = document.getElementById('circuit-svg');
+    function renderAmmeterSVG(Rs, Rg, I) {
+        const svg = document.getElementById('svg-circuit');
         svg.innerHTML = `
-            <line x1="20" y1="70" x2="70" y2="70" stroke="#1e3c72" stroke-width="3" />
-            <line x1="70" y1="35" x2="70" y2="105" stroke="#1e3c72" stroke-width="3" />
-            <line x1="70" y1="35" x2="140" y2="35" stroke="#1e3c72" stroke-width="3" />
-            <circle cx="170" cy="35" r="24" fill="#ffffff" stroke="#2980b9" stroke-width="3" />
-            <text x="170" y="40" fill="#2980b9" font-size="14" font-weight="bold" text-anchor="middle">G</text>
-            <line x1="194" y1="35" x2="270" y2="35" stroke="#1e3c72" stroke-width="3" />
-            <line x1="70" y1="105" x2="135" y2="105" stroke="#1e3c72" stroke-width="3" />
-            <rect x="135" y="90" width="70" height="30" fill="#f8fafc" stroke="#27ae60" stroke-width="3" rx="4" />
-            <text x="170" y="110" fill="#27ae60" font-size="12" font-weight="bold" text-anchor="middle">Rs (شنت)</text>
-            <line x1="205" y1="105" x2="270" y2="105" stroke="#1e3c72" stroke-width="3" />
-            <line x1="270" y1="35" x2="270" y2="105" stroke="#1e3c72" stroke-width="3" />
-            <line x1="270" y1="70" x2="340" y2="70" stroke="#1e3c72" stroke-width="3" />
-            <circle cx="20" cy="70" r="5" fill="#e74c3c" />
-            <circle cx="340" cy="70" r="5" fill="#2c3e50" />
-            <text x="20" y="55" fill="#e74c3c" font-size="12" font-weight="bold" text-anchor="middle">+</text>
-            <text x="340" y="55" fill="#2c3e50" font-size="12" font-weight="bold" text-anchor="middle">-</text>
+            <line x1="30" y1="70" x2="90" y2="70" stroke="#38bdf8" stroke-width="3" />
+            <line x1="90" y1="35" x2="90" y2="105" stroke="#38bdf8" stroke-width="3" />
+            
+            <line x1="90" y1="35" x2="170" y2="35" stroke="#38bdf8" stroke-width="2.5" />
+            <circle cx="200" cy="35" r="22" fill="#1e293b" stroke="#38bdf8" stroke-width="2.5" />
+            <text x="200" y="41" fill="#38bdf8" font-size="15" font-weight="bold" text-anchor="middle">G</text>
+            <text x="200" y="10" fill="#94a3b8" font-size="9" text-anchor="middle">Rg=${Rg}Ω</text>
+            <line x1="222" y1="35" x2="310" y2="35" stroke="#38bdf8" stroke-width="2.5" />
+            
+            <line x1="90" y1="105" x2="160" y2="105" stroke="#38bdf8" stroke-width="2.5" />
+            <rect x="160" y="87" width="80" height="36" rx="6" fill="#1e293b" stroke="#10b981" stroke-width="2.5" />
+            <text x="200" y="108" fill="#34d399" font-size="12" font-weight="bold" text-anchor="middle">Rs (Shunt)</text>
+            <text x="200" y="136" fill="#94a3b8" font-size="10" text-anchor="middle">${formatOhms(Rs)}</text>
+            <line x1="240" y1="105" x2="310" y2="105" stroke="#38bdf8" stroke-width="2.5" />
+            
+            <line x1="310" y1="35" x2="310" y2="105" stroke="#38bdf8" stroke-width="3" />
+            <line x1="310" y1="70" x2="370" y2="70" stroke="#38bdf8" stroke-width="3" />
+
+            <circle cx="30" cy="70" r="6" fill="#ef4444" />
+            <circle cx="370" cy="70" r="6" fill="#64748b" />
+            <text x="30" y="52" fill="#ef4444" font-size="12" font-weight="bold" text-anchor="middle">+ (I = ${I}mA)</text>
+            <text x="370" y="52" fill="#94a3b8" font-size="12" font-weight="bold" text-anchor="middle">-</text>
         `;
     }
 
-    calculate();
+    updateCalc();
 </script>
 
 </body>
